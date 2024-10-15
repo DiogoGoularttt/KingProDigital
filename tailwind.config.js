@@ -8,8 +8,7 @@ module.exports = {
   theme: {
     extend: {
       colors: {
-        background: "var(--background)",
-        foreground: "var(--foreground)",
+        primary: "#D6AF4F", // substitua pelo valor hexadecimal da sua cor primária
       },
     },
   },
