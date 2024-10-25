@@ -2,12 +2,18 @@
 
 import { useEffect, useState } from "react";
 import axios from "axios";
+import emailjs from "@emailjs/browser";
 
 export default function Formulario() {
+  const [name, setName] = useState("");
+  const [email, setEmail] = useState("");
+  const [phone, setPhone] = useState("");
+  const [state, setState] = useState("");
+  const [city, setCity] = useState("");
+
   const [ufs, setUfs] = useState([]);
   const [cities, setCities] = useState([]);
   const [selectedUf, setSelectedUf] = useState("0");
-  const [selectedCity, setSelectedCity] = useState("0");
 
   useEffect(() => {
     axios
@@ -18,23 +24,66 @@ export default function Formulario() {
   }, []);
 
   useEffect(() => {
-    axios
-      .get(
-        `https://servicodados.ibge.gov.br/api/v1/localidades/estados/${selectedUf}/municipios`
-      )
-      .then((response) => {
-        setCities(response.data);
-      });
+    if (selectedUf !== "0") {
+      axios
+        .get(`https://servicodados.ibge.gov.br/api/v1/localidades/estados/${selectedUf}/municipios`)
+        .then((response) => {
+          setCities(response.data);
+          setCity(""); // Resetando a cidade ao selecionar um novo estado
+        });
+    } else {
+      setCities([]); // Limpa as cidades se nenhuma UF for selecionada
+      setCity(""); // Limpa a cidade
+    }
   }, [selectedUf]);
 
   function handleSelectedUf(event) {
     const uf = event.target.value;
     setSelectedUf(uf);
+    setState(uf); // Assume que o estado é a UF
   }
 
   function handleSelectedCity(event) {
-    const city = event.target.value;
-    setSelectedCity(city);
+    setCity(event.target.value);
+  }
+
+  function sendEmail(e) {
+    e.preventDefault();
+    if (
+      name === "" ||
+      email === "" ||
+      phone === "" ||
+      state === "" ||
+      city === ""
+    ) {
+      alert("Preencha todos os campos");
+      return;
+    }
+    const templateParams = {
+      from_name: name,
+      email: email,
+      phone: phone,
+      state: state,
+      city: city,
+    };
+    emailjs
+      .send(
+        "service_xkpmp2v",
+        "template_owoh6pf",
+        templateParams,
+        "WcvlDueUa9OoR5LnD"
+      )
+      .then((response) => {
+        console.log("Email enviado!", response.status, response.text);
+        setName('');
+        setEmail('');
+        setPhone('');
+        setState('');
+        setCity('');
+        setSelectedUf("0"); // Resetando a UF
+      }, (err) => {
+        console.log("Erro: ", err)
+      });
   }
 
   return (
@@ -43,13 +92,20 @@ export default function Formulario() {
         Torne-se um King e transforme sua jornada!
       </h1>
 
-      <form className="bg-gray-700 p-8 rounded-lg shadow-lg w-full max-w-md">
+      <form
+        onSubmit={sendEmail}
+        className="bg-gray-700 p-8 rounded-lg shadow-lg w-full max-w-md"
+      >
+        {/* Inputs do formulário */}
         <div className="mb-4">
           <label className="block text-white mb-1">Nome completo</label>
           <input
             type="text"
             className="w-full p-2 rounded border border-none focus:outline-none focus:ring-2 focus:ring-blue-500"
             placeholder="Digite seu nome"
+            onChange={(e) => setName(e.target.value)}
+            value={name}
+            required
           />
         </div>
 
@@ -59,6 +115,9 @@ export default function Formulario() {
             type="email"
             className="w-full p-2 rounded border border-none focus:outline-none focus:ring-2 focus:ring-blue-500"
             placeholder="Digite seu email"
+            onChange={(e) => setEmail(e.target.value)}
+            value={email}
+            required
           />
         </div>
 
@@ -68,6 +127,9 @@ export default function Formulario() {
             type="text"
             className="w-full p-2 rounded border border-none focus:outline-none focus:ring-2 focus:ring-blue-500"
             placeholder="Digite seu telefone"
+            onChange={(e) => setPhone(e.target.value)}
+            value={phone}
+            required
           />
         </div>
 
@@ -76,9 +138,10 @@ export default function Formulario() {
           <select
             name="uf"
             id="uf"
-            onChange={handleSelectedUf}
             className="w-full p-2 rounded border border-none focus:outline-none focus:ring-2 focus:ring-blue-500"
-            placeholder="Digite seu telefone"
+            onChange={handleSelectedUf}
+            value={selectedUf}
+            required
           >
             <option value="0">Selecione o seu estado</option>
             {ufs.map((uf) => (
@@ -94,10 +157,10 @@ export default function Formulario() {
           <select
             name="cities"
             id="cities"
-            value={selectedCity}
-            onChange={handleSelectedCity}
+            value={city}
             className="w-full p-2 rounded border border-none focus:outline-none focus:ring-2 focus:ring-blue-500"
-            placeholder="Digite seu telefone"
+            onChange={handleSelectedCity}
+            required
           >
             <option value="0">Selecione a sua cidade</option>
             {cities.map((city) => (
@@ -112,6 +175,7 @@ export default function Formulario() {
           <input
             type="checkbox"
             className="mr-2 focus:ring-2 focus:ring-blue-500"
+            required
           />
           <label className="text-white">Aceito os termos de serviço</label>
         </div>
