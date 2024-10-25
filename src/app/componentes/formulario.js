@@ -87,6 +87,9 @@ export default function Formulario() {
         icon: "error",
         title: "Oops...",
         text: errorMessage,
+        customClass: {
+          confirmButton: "custom-button",
+        },
       });
       return;
     }
