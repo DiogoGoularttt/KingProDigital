@@ -23,3 +23,8 @@ p {
   @apply text-xl;
   @apply font-semibold;
 }
+
+.custom-button {
+  @apply bg-primary;
+  @apply text-white;
+}

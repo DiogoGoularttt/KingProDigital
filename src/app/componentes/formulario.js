@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
 import emailjs from "@emailjs/browser";
+import Swal from "sweetalert2";
 
 export default function Formulario() {
   const [name, setName] = useState("");
@@ -31,11 +32,11 @@ export default function Formulario() {
         )
         .then((response) => {
           setCities(response.data);
-          setCity(""); // Resetando a cidade ao selecionar um novo estado
+          setCity("");
         });
     } else {
-      setCities([]); // Limpa as cidades se nenhuma UF for selecionada
-      setCity(""); // Limpa a cidade
+      setCities([]);
+      setCity("");
     }
   }, [selectedUf]);
 
@@ -56,7 +57,7 @@ export default function Formulario() {
   function handleSelectedUf(event) {
     const uf = event.target.value;
     setSelectedUf(uf);
-    setState(uf); // Assume que o estado é a UF
+    setState(uf);
   }
 
   function handleSelectedCity(event) {
@@ -72,9 +73,24 @@ export default function Formulario() {
       state === "" ||
       city === ""
     ) {
-      alert("Preencha todos os campos");
+      let errorMessage = "Preencha todos os campos";
+
+      if (state === "" && city === "") {
+        errorMessage = "Por favor, preencha os campos de estado e cidade.";
+      } else if (state === "") {
+        errorMessage = "Por favor, preencha o campo de estado.";
+      } else if (city === "") {
+        errorMessage = "Por favor, preencha o campo de cidade.";
+      }
+
+      Swal.fire({
+        icon: "error",
+        title: "Oops...",
+        text: errorMessage,
+      });
       return;
     }
+
     const templateParams = {
       from_name: name,
       email: email,
@@ -92,15 +108,31 @@ export default function Formulario() {
       .then(
         (response) => {
           console.log("Email enviado!", response.status, response.text);
+          Swal.fire({
+            icon: "success",
+            title: "Sucesso!",
+            text: "Email enviado com sucesso! Entraremos em contato com você em breve!",
+            customClass: {
+              confirmButton: "custom-button",
+            },
+          });
           setName("");
           setEmail("");
           setPhone("");
           setState("");
           setCity("");
-          setSelectedUf("0"); // Resetando a UF
+          setSelectedUf("0");
         },
         (err) => {
           console.log("Erro: ", err);
+          Swal.fire({
+            icon: "error",
+            title: "Erro!",
+            text: "Ocorreu um erro ao enviar o email.",
+            customClass: {
+              confirmButton: "custom-button",
+            },
+          });
         }
       );
   }
@@ -115,9 +147,8 @@ export default function Formulario() {
         onSubmit={sendEmail}
         className="bg-gray-700 p-8 rounded-lg shadow-lg w-full max-w-md"
       >
-        {/* Inputs do formulário */}
         <div className="mb-4">
-          <label for="name" className="block text-white mb-1">
+          <label htmlFor="name" className="block text-white mb-1">
             Nome completo
           </label>
           <input
@@ -132,7 +163,7 @@ export default function Formulario() {
         </div>
 
         <div className="mb-4">
-          <label for="email" className="block text-white mb-1">
+          <label htmlFor="email" className="block text-white mb-1">
             Email
           </label>
           <input
@@ -147,7 +178,7 @@ export default function Formulario() {
         </div>
 
         <div className="mb-4">
-          <label for="phone" className="block text-white mb-1">
+          <label htmlFor="phone" className="block text-white mb-1">
             Telefone
           </label>
           <input
@@ -163,7 +194,7 @@ export default function Formulario() {
         </div>
 
         <div className="mb-4">
-          <label for="uf" className="block text-white mb-1">
+          <label htmlFor="uf" className="block text-white mb-1">
             Estado
           </label>
           <select
@@ -175,9 +206,7 @@ export default function Formulario() {
             value={selectedUf}
             required
           >
-            <option value="0" disabled>
-              Selecione o seu estado
-            </option>
+            <option value="0">Selecione o seu estado</option>
             {ufs.map((uf) => (
               <option key={uf.id} value={uf.sigla}>
                 {uf.nome}
@@ -187,7 +216,7 @@ export default function Formulario() {
         </div>
 
         <div className="mb-4">
-          <label for="cities" className="block text-white mb-1">
+          <label htmlFor="cities" className="block text-white mb-1">
             Cidade
           </label>
           <select
@@ -199,9 +228,7 @@ export default function Formulario() {
             onChange={handleSelectedCity}
             required
           >
-            <option value="0" disabled>
-              Selecione a sua cidade
-            </option>
+            <option value="0">Selecione a sua cidade</option>
             {cities.map((city) => (
               <option key={city.id} value={city.nome}>
                 {city.nome}
@@ -217,7 +244,9 @@ export default function Formulario() {
             className="mr-2 focus:ring-2 focus:ring-blue-500"
             required
           />
-          <label for="termos" className="text-white">Aceito os termos de serviço</label>
+          <label htmlFor="termos" className="text-white">
+            Aceito os termos de serviço
+          </label>
         </div>
 
         <button
