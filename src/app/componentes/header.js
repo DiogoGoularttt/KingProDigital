@@ -8,8 +8,8 @@ export default function Header() {
         src={Logo}
         alt="Logo"
         className="rounded-full"
-        width={500} 
-        height={500} 
+        width={400} 
+        height={400} 
         priority
       />
     </div>

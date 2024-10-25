@@ -15,7 +15,7 @@ body, html {
 
 h1 {
   @apply md:text-7xl;
-  @apply text-5xl;
+  @apply text-3xl;
   @apply font-bold;
 }
 

@@ -29,8 +29,8 @@ export default function Conteudo2() {
                         src={Logo}
                         alt="Descrição da imagem" 
                         className="rounded-full shadow-lg shadow-white" 
-                        width={500}
-                        height={500}
+                        width={400}
+                        height={400}
                         priority
                     />
                 </div>

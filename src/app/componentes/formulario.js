@@ -26,7 +26,9 @@ export default function Formulario() {
   useEffect(() => {
     if (selectedUf !== "0") {
       axios
-        .get(`https://servicodados.ibge.gov.br/api/v1/localidades/estados/${selectedUf}/municipios`)
+        .get(
+          `https://servicodados.ibge.gov.br/api/v1/localidades/estados/${selectedUf}/municipios`
+        )
         .then((response) => {
           setCities(response.data);
           setCity(""); // Resetando a cidade ao selecionar um novo estado
@@ -36,6 +38,20 @@ export default function Formulario() {
       setCity(""); // Limpa a cidade
     }
   }, [selectedUf]);
+
+  const handlePhone = (event) => {
+    const value = event.target.value;
+    const formattedValue = phoneMask(value);
+    setPhone(formattedValue);
+  };
+
+  const phoneMask = (value) => {
+    if (!value) return "";
+    value = value.replace(/\D/g, "");
+    value = value.replace(/(\d{2})(\d)/, "($1) $2");
+    value = value.replace(/(\d)(\d{4})$/, "$1-$2");
+    return value;
+  };
 
   function handleSelectedUf(event) {
     const uf = event.target.value;
@@ -73,17 +89,20 @@ export default function Formulario() {
         templateParams,
         "WcvlDueUa9OoR5LnD"
       )
-      .then((response) => {
-        console.log("Email enviado!", response.status, response.text);
-        setName('');
-        setEmail('');
-        setPhone('');
-        setState('');
-        setCity('');
-        setSelectedUf("0"); // Resetando a UF
-      }, (err) => {
-        console.log("Erro: ", err)
-      });
+      .then(
+        (response) => {
+          console.log("Email enviado!", response.status, response.text);
+          setName("");
+          setEmail("");
+          setPhone("");
+          setState("");
+          setCity("");
+          setSelectedUf("0"); // Resetando a UF
+        },
+        (err) => {
+          console.log("Erro: ", err);
+        }
+      );
   }
 
   return (
@@ -98,8 +117,11 @@ export default function Formulario() {
       >
         {/* Inputs do formulário */}
         <div className="mb-4">
-          <label className="block text-white mb-1">Nome completo</label>
+          <label htmlFor="name" className="block text-white mb-1">
+            Nome completo
+          </label>
           <input
+            id="name"
             type="text"
             className="w-full p-2 rounded border border-none focus:outline-none focus:ring-2 focus:ring-blue-500"
             placeholder="Digite seu nome"
@@ -110,8 +132,9 @@ export default function Formulario() {
         </div>
 
         <div className="mb-4">
-          <label className="block text-white mb-1">Email</label>
+          <label htmlFor="email" className="block text-white mb-1">Email</label>
           <input
+          id="email"
             type="email"
             className="w-full p-2 rounded border border-none focus:outline-none focus:ring-2 focus:ring-blue-500"
             placeholder="Digite seu email"
@@ -122,28 +145,31 @@ export default function Formulario() {
         </div>
 
         <div className="mb-4">
-          <label className="block text-white mb-1">Telefone</label>
+          <label htmlFor="phone" className="block text-white mb-1">Telefone</label>
           <input
-            type="text"
+          id="phone"
+            type="tel"
             className="w-full p-2 rounded border border-none focus:outline-none focus:ring-2 focus:ring-blue-500"
             placeholder="Digite seu telefone"
-            onChange={(e) => setPhone(e.target.value)}
+            maxLength="15"
+            onChange={handlePhone}
             value={phone}
             required
           />
         </div>
 
         <div className="mb-4">
-          <label className="block text-white mb-1">Estado</label>
+          <label htmlFor="uf" className="block text-white mb-1">Estado</label>
           <select
             name="uf"
             id="uf"
+            aria-label="Selecione o seu estado"
             className="w-full p-2 rounded border border-none focus:outline-none focus:ring-2 focus:ring-blue-500"
             onChange={handleSelectedUf}
             value={selectedUf}
             required
           >
-            <option value="0">Selecione o seu estado</option>
+            <option value="0" disabled>Selecione o seu estado</option>
             {ufs.map((uf) => (
               <option key={uf.id} value={uf.sigla}>
                 {uf.nome}
@@ -153,16 +179,17 @@ export default function Formulario() {
         </div>
 
         <div className="mb-4">
-          <label className="block text-white mb-1">Cidade</label>
+          <label htmlFor="cities" className="block text-white mb-1">Cidade</label>
           <select
             name="cities"
             id="cities"
+            aria-label="Selecione a sua cidade"
             value={city}
             className="w-full p-2 rounded border border-none focus:outline-none focus:ring-2 focus:ring-blue-500"
             onChange={handleSelectedCity}
             required
           >
-            <option value="0">Selecione a sua cidade</option>
+            <option value="0" disabled>Selecione a sua cidade</option>
             {cities.map((city) => (
               <option key={city.id} value={city.nome}>
                 {city.nome}

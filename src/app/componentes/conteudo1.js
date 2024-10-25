@@ -30,8 +30,8 @@ export default function Conteudo1() {
             src={Logo}
             alt="Descrição da imagem"
             className="rounded-full shadow-lg"
-            width={500}
-            height={500}
+            width={400}
+            height={400}
             priority
           />
         </div>
