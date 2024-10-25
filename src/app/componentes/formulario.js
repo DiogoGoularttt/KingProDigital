@@ -117,7 +117,7 @@ export default function Formulario() {
       >
         {/* Inputs do formulário */}
         <div className="mb-4">
-          <label htmlFor="name" className="block text-white mb-1">
+          <label for="name" className="block text-white mb-1">
             Nome completo
           </label>
           <input
@@ -132,9 +132,11 @@ export default function Formulario() {
         </div>
 
         <div className="mb-4">
-          <label htmlFor="email" className="block text-white mb-1">Email</label>
+          <label for="email" className="block text-white mb-1">
+            Email
+          </label>
           <input
-          id="email"
+            id="email"
             type="email"
             className="w-full p-2 rounded border border-none focus:outline-none focus:ring-2 focus:ring-blue-500"
             placeholder="Digite seu email"
@@ -145,9 +147,11 @@ export default function Formulario() {
         </div>
 
         <div className="mb-4">
-          <label htmlFor="phone" className="block text-white mb-1">Telefone</label>
+          <label for="phone" className="block text-white mb-1">
+            Telefone
+          </label>
           <input
-          id="phone"
+            id="phone"
             type="tel"
             className="w-full p-2 rounded border border-none focus:outline-none focus:ring-2 focus:ring-blue-500"
             placeholder="Digite seu telefone"
@@ -159,7 +163,9 @@ export default function Formulario() {
         </div>
 
         <div className="mb-4">
-          <label htmlFor="uf" className="block text-white mb-1">Estado</label>
+          <label for="uf" className="block text-white mb-1">
+            Estado
+          </label>
           <select
             name="uf"
             id="uf"
@@ -169,7 +175,9 @@ export default function Formulario() {
             value={selectedUf}
             required
           >
-            <option value="0" disabled>Selecione o seu estado</option>
+            <option value="0" disabled>
+              Selecione o seu estado
+            </option>
             {ufs.map((uf) => (
               <option key={uf.id} value={uf.sigla}>
                 {uf.nome}
@@ -179,7 +187,9 @@ export default function Formulario() {
         </div>
 
         <div className="mb-4">
-          <label htmlFor="cities" className="block text-white mb-1">Cidade</label>
+          <label for="cities" className="block text-white mb-1">
+            Cidade
+          </label>
           <select
             name="cities"
             id="cities"
@@ -189,7 +199,9 @@ export default function Formulario() {
             onChange={handleSelectedCity}
             required
           >
-            <option value="0" disabled>Selecione a sua cidade</option>
+            <option value="0" disabled>
+              Selecione a sua cidade
+            </option>
             {cities.map((city) => (
               <option key={city.id} value={city.nome}>
                 {city.nome}
@@ -200,11 +212,12 @@ export default function Formulario() {
 
         <div className="mb-4 flex items-center">
           <input
+            id="termos"
             type="checkbox"
             className="mr-2 focus:ring-2 focus:ring-blue-500"
             required
           />
-          <label className="text-white">Aceito os termos de serviço</label>
+          <label for="termos" className="text-white">Aceito os termos de serviço</label>
         </div>
 
         <button
